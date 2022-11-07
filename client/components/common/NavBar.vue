@@ -14,6 +14,12 @@
       <router-link to="/">
         Home
       </router-link>
+      <router-link to="/community">
+        Community
+      </router-link>
+      <router-link :to="{name: 'Profile', params: {user: $store.state.username}}">
+        Profile
+      </router-link>
       <router-link
         v-if="$store.state.username"
         to="/account"

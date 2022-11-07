@@ -27,6 +27,9 @@
         >
       </div>
     </article>
+    <article v-else-if="setControversial">
+      View controversial posts by default: {{$store.state.controversial}}
+    </article>
     <article v-else>
       <p>{{ content }}</p>
     </article>
@@ -61,6 +64,7 @@ export default {
       hasBody: false, // Whether or not form request has a body
       setUsername: false, // Whether or not stored username should be updated after form submission
       refreshFreets: false, // Whether or not stored freets should be updated after form submission
+      setControversial: false,
       alerts: {}, // Displays success/error messages encountered during form submission
       callback: null // Function to run after successful form submission
     };
@@ -101,6 +105,11 @@ export default {
 
         if (this.refreshFreets) {
           this.$store.commit('refreshFreets');
+        }
+
+        if (this.setControversial) {
+          const res = await r.json();
+          this.$store.commit('setControversial', res.setting)
         }
 
         if (this.callback) {

@@ -3,7 +3,7 @@ import moment from 'moment';
 import type {User} from './model';
 
 // Update this if you add a property to the User type!
-export type UserResponse = {
+type UserResponse = {
   _id: string;
   username: string;
   dateJoined: string;
@@ -26,13 +26,19 @@ const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:
  * @returns {UserResponse} - The user object without the password
  */
 const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
+  const userCopy: User = {
+    ...user.toObject({
+      versionKey: false // Cosmetics; prevents returning of __v property
+    })
+  };
+  delete userCopy.password;
   return {
-    _id: user._id.toString(),
-    username: user.username,
+    ...userCopy,
+    _id: userCopy._id.toString(),
     dateJoined: formatDate(user.dateJoined)
   };
 };
 
 export {
-  constructUserResponse,
+  constructUserResponse
 };

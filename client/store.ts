@@ -9,8 +9,9 @@ Vue.use(Vuex);
  */
 const store = new Vuex.Store({
   state: {
-    filter: null, // Username to filter shown freets by (null = show all)
+    filter: null,
     freets: [], // All freets created in the app
+    controversial: null,
     username: null, // Username of the logged in user
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
@@ -31,6 +32,9 @@ const store = new Vuex.Store({
        */
       state.username = username;
     },
+    setControversial(state, setting) {
+      state.controversial = setting;
+    },
     updateFilter(state, filter) {
       /**
        * Update the stored freets filter to the specified one.
@@ -49,7 +53,7 @@ const store = new Vuex.Store({
       /**
        * Request the server for the currently available freets.
        */
-      const url = state.filter ? `/api/users/${state.filter}/freets` : '/api/freets';
+      const url = state.filter ? state.filter : '/api/freets';
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
     }

@@ -7,6 +7,15 @@ import * as util from './util';
 
 const router = express.Router();
 
+/**
+ * Get the signed in user
+ * TODO: may need better route and documentation
+ * (so students don't accidentally delete this when copying over)
+ *
+ * @name GET /api/users/session
+ *
+ * @return - currently logged in user, or null if not logged in
+ */
 router.get(
   '/session',
   [],
@@ -159,16 +168,5 @@ router.delete(
     });
   }
 );
-
-router.get(
-  '/:user?',
-  [
-    userValidator.isUserLoggedIn
-  ],
-  async (req: Request, res: Response) => {
-    const user = await UserCollection.findOneByUsername(req.params.user);
-    res.status(200).json(util.constructUserResponse(user));
-  }
-)
 
 export {router as userRouter};

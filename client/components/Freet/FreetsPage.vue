@@ -7,21 +7,6 @@
         <h2>Welcome @{{ $store.state.username }}</h2>
       </header>
       <CreateFreetForm />
-    </section>
-    <section v-else>
-      <header>
-        <h2>Welcome to Fritter!</h2>
-      </header>
-      <article>
-        <h3>
-          <router-link to="/login">
-            Sign in
-          </router-link>
-          to create, edit, and delete freets.
-        </h3>
-      </article>
-    </section>
-    <section>
       <header>
         <div class="left">
           <h2>
@@ -31,14 +16,14 @@
             </span>
           </h2>
         </div>
-        <div class="right">
+        <!-- <div class="right">
           <GetFreetsForm
             ref="getFreetsForm"
             value="author"
             placeholder="🔍 Filter by author (optional)"
             button="🔄 Get freets"
           />
-        </div>
+        </div> -->
       </header>
       <section
         v-if="$store.state.freets.length"
@@ -55,6 +40,19 @@
         <h3>No freets found.</h3>
       </article>
     </section>
+    <section v-else>
+      <header>
+        <h2>Welcome to Fritter!</h2>
+      </header>
+      <article>
+        <h3>
+          <router-link to="/login">
+            Sign in
+          </router-link>
+          to create, edit, and delete freets.
+        </h3>
+      </article>
+    </section>
   </main>
 </template>
 
@@ -66,8 +64,9 @@ import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
 export default {
   name: 'FreetPage',
   components: {FreetComponent, GetFreetsForm, CreateFreetForm},
-  mounted() {
-    this.$refs.getFreetsForm.submit();
+  beforeCreate() {
+    this.$store.commit('updateFilter', null);
+    this.$store.commit('refreshFreets');
   }
 };
 </script>

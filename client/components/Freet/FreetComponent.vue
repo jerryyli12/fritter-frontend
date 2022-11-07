@@ -7,7 +7,9 @@
   >
     <header>
       <h3 class="author">
-        @{{ freet.author }}
+        <router-link :to="{name: 'Profile', params: {user: freet.author}}">
+          @{{ freet.author }}
+        </router-link>
       </h3>
       <div
         v-if="$store.state.username === freet.author"
@@ -46,12 +48,31 @@
       v-else
       class="content"
     >
-      {{ freet.content }}
+      <p v-if="!freet.blur || viewable">
+        {{ freet.content }}
+      </p>
+      <p v-else>
+        The following Freet contains potentially controversial content.
+        <button @click="viewControversial">
+          View anyway
+        </button>
+        <button @click="userSettings">
+          Change user settings
+        </button>
+      </p>
     </p>
     <p class="info">
       Posted at {{ freet.dateModified }}
       <i v-if="freet.edited">(edited)</i>
     </p>
+    <button @click="toggleLikeFreet">
+      <p v-if="freet.iLiked">❤️ {{ freet.likes }} Likes</p>
+      <p v-else> 🤍 {{ freet.likes }} Likes</p>
+    </button>
+    <button @click="toggleControversialFreet">
+      <p v-if="freet.iControversialed">⚠️</p>
+      <p v-else>⚠</p>
+    </button>
     <section class="alerts">
       <article
         v-for="(status, alert, index) in alerts"
@@ -76,6 +97,7 @@ export default {
   },
   data() {
     return {
+      viewable: false,
       editing: false, // Whether or not this freet is in edit mode
       draft: this.freet.content, // Potentially-new content for this freet
       alerts: {} // Displays success/error messages encountered during freet modification
@@ -161,6 +183,22 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
+    },
+    async toggleLikeFreet() {
+      const r = await fetch(`/api/likes/${this.freet._id}`, {method: 'PUT'});
+      // this.freet = (await r.json()).freet;
+      this.$store.commit('refreshFreets');
+    },
+    async toggleControversialFreet() {
+      const r = await fetch(`/api/controversials/${this.freet._id}`, {method: 'PUT'});
+      // this.freet = (await r.json()).freet;
+      this.$store.commit('refreshFreets');
+    },
+    viewControversial() {
+      this.viewable = true;
+    },
+    userSettings() {
+      this.$router.push('Account');
     }
   }
 };
