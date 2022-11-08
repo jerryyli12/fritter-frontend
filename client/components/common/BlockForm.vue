@@ -64,6 +64,7 @@ export default {
       hasBody: false, // Whether or not form request has a body
       setUsername: false, // Whether or not stored username should be updated after form submission
       refreshFreets: false, // Whether or not stored freets should be updated after form submission
+      refreshEvents: false,
       setControversial: false,
       alerts: {}, // Displays success/error messages encountered during form submission
       callback: null // Function to run after successful form submission
@@ -107,6 +108,14 @@ export default {
           this.$store.commit('refreshFreets');
         }
 
+        if (this.refreshCommunities) {
+          this.$store.commit('refreshCommunities');
+        }
+
+        if (this.refreshEvents) {
+          this.$store.commit('refreshEvents');
+        }
+
         if (this.setControversial) {
           const res = await r.json();
           this.$store.commit('setControversial', res.setting)
@@ -125,7 +134,7 @@ export default {
 </script>
 
 <style scoped>
-form {
+/* form {
   border: 1px solid #111;
   padding: 0.5rem;
   display: flex;
@@ -156,5 +165,53 @@ form h3 {
 textarea {
    font-family: inherit;
    font-size: inherit;
+} */
+form {
+  padding: 0.75em ;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
 }
+
+article > div {
+  display: flex;
+  flex-direction: column;
+}
+
+form > article p {
+  margin: 0;
+}
+
+form h3,
+form > * {
+  margin: 0.3em 0;
+}
+
+form h3 {
+  margin-top: 0;
+}
+
+textarea {
+   font-family: inherit;
+   font-size: inherit;
+}
+
+button {
+  height: 2em;
+  display: inline-block;
+  border-radius: 1em;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  border-width: 0em;
+  background-color: #2db3ff;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #0d93df;
+}
+
 </style>

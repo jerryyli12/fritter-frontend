@@ -31,19 +31,46 @@ export default {
 <style>
 * {
   box-sizing: border-box;
+  font-family: "Leelawadee UI";
+  color: black;
 }
 
 body {
-  height: 100vh;
+  /* height: 100vh;
   flex-direction: column;
   display: flex;
   padding: 0;
   margin: 0;
-  font-size: 1.2em;
+  font-size: 1.2em; */
 }
 
 main {
-  padding: 0 5em 5em;
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 45%;
+  border: 1px solid #eee;
+  margin-left: 30%;
+}
+
+h2 {
+  margin-left: .5em;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:active {
+  text-decoration: underline;
 }
 
 .alerts {
@@ -65,6 +92,7 @@ main {
 
 .alerts p {
     margin: 0;
+    color: white;
 }
 
 .alerts .error {

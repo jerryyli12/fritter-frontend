@@ -163,7 +163,8 @@ router.delete(
 router.get(
   '/:user?',
   [
-    userValidator.isUserLoggedIn
+    userValidator.isUserLoggedIn,
+    userValidator.isUserExistsParam,
   ],
   async (req: Request, res: Response) => {
     const user = await UserCollection.findOneByUsername(req.params.user);

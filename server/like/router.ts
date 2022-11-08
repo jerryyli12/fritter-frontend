@@ -24,7 +24,7 @@ router.get(
     const like = await LikeCollection.findOne((await UserCollection.findOneByUsername(req.query.user as string))._id);
     // const like = await LikeCollection.findOne(req.params.userId);
     const populatedLike = await like.populate('likedFreets') as PopulatedLike;
-    const response = await Promise.all(populatedLike.likedFreets.sort((a, b) => b.dateModified.getTime() - a.dateModified.getTime()).map(m => constructFreetResponse(m as HydratedDocument<Freet>, req.session.userId)));
+    const response = await Promise.all(populatedLike.likedFreets.sort((a, b) => b.dateModified.getTime() - a.dateModified.getTime()).filter(m => !m.community).map(m => constructFreetResponse(m as HydratedDocument<Freet>, req.session.userId)));
     res.status(200).json(response);
   }
 );

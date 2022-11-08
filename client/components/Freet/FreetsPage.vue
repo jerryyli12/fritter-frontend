@@ -7,24 +7,11 @@
         <h2>Welcome @{{ $store.state.username }}</h2>
       </header>
       <CreateFreetForm />
-      <header>
-        <div class="left">
-          <h2>
-            Viewing all freets
-            <span v-if="$store.state.filter">
-              by @{{ $store.state.filter }}
-            </span>
-          </h2>
-        </div>
-        <!-- <div class="right">
-          <GetFreetsForm
-            ref="getFreetsForm"
-            value="author"
-            placeholder="🔍 Filter by author (optional)"
-            button="🔄 Get freets"
-          />
-        </div> -->
-      </header>
+      <!-- <header>
+        <h2>
+          Viewing all freets
+        </h2>
+      </header> -->
       <section
         v-if="$store.state.freets.length"
       >
@@ -46,7 +33,7 @@
       </header>
       <article>
         <h3>
-          <router-link to="/login">
+          <router-link to="/login" id="link">
             Sign in
           </router-link>
           to create, edit, and delete freets.
@@ -59,20 +46,21 @@
 <script>
 import FreetComponent from '@/components/Freet/FreetComponent.vue';
 import CreateFreetForm from '@/components/Freet/CreateFreetForm.vue';
-import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
 
 export default {
   name: 'FreetPage',
-  components: {FreetComponent, GetFreetsForm, CreateFreetForm},
+  components: {FreetComponent, CreateFreetForm},
   beforeCreate() {
-    this.$store.commit('updateFilter', null);
-    this.$store.commit('refreshFreets');
+    if (this.$store.state.username) {
+      this.$store.commit('updateFilter', null);
+      this.$store.commit('refreshFreets');
+    }
   }
 };
 </script>
 
 <style scoped>
-section {
+/* section {
   display: flex;
   flex-direction: column;
 }
@@ -91,5 +79,13 @@ section .scrollbox {
   flex: 1 0 50vh;
   padding: 3%;
   overflow-y: scroll;
+} */
+
+h3 {
+  margin-left: 0.75em;
+}
+
+#link {
+  color: #0d93df;
 }
 </style>

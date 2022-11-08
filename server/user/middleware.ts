@@ -164,6 +164,25 @@ const isUserExists = async (req: Request, res: Response, next: NextFunction) => 
   next();
 };
 
+const isUserExistsParam = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.params.user) {
+    res.status(400).json({
+      error: 'Provided username must be nonempty.'
+    });
+    return;
+  }
+
+  const user = await UserCollection.findOneByUsername(req.params.user as string);
+  if (!user) {
+    res.status(404).json({
+      error: `A user with username ${req.params.user as string} does not exist.`
+    });
+    return;
+  }
+
+  next();
+};
+
 export {
   isCurrentSessionUserExists,
   isUserLoggedIn,
@@ -173,5 +192,6 @@ export {
   isAuthorExists,
   isValidUsername,
   isValidPassword,
-  isUserExists
+  isUserExists,
+  isUserExistsParam,
 };

@@ -19,6 +19,9 @@ export default {
         });
       }
     };
+  },
+  async beforeCreate() {
+    this.$store.state.controversial = await (await fetch('/api/controversials')).json();
   }
 };
 </script>

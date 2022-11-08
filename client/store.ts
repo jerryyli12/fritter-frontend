@@ -9,10 +9,15 @@ Vue.use(Vuex);
  */
 const store = new Vuex.Store({
   state: {
-    filter: null,
+    filter: undefined,
     freets: [], // All freets created in the app
+    communities: [],
+    events: [],
+    communityFilter: undefined,
+    eventFilter: undefined,
     controversial: null,
     username: null, // Username of the logged in user
+    viewingLeft: null,
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
   mutations: {
@@ -49,13 +54,38 @@ const store = new Vuex.Store({
        */
       state.freets = freets;
     },
+    updateViewing(state, view) {
+      state.viewingLeft = view;
+    },
     async refreshFreets(state) {
       /**
        * Request the server for the currently available freets.
        */
       const url = state.filter ? state.filter : '/api/freets';
       const res = await fetch(url).then(async r => r.json());
-      state.freets = res;
+      if (!res.freets)
+        state.freets = res;
+      else
+        state.freets = res.freets;
+    },
+    updateCommunityFilter(state, filter) {
+      state.communityFilter = filter;
+    },
+    async refreshCommunities(state) {
+      const url = state.communityFilter ? state.communityFilter : '/api/communities';
+      const res = await fetch(url).then(async r => r.json());
+      state.communities = res;
+    },
+    updateEventFilter(state, filter) {
+      state.eventFilter = filter;
+    },
+    async refreshEvents(state) {
+      const url = state.eventFilter ? state.eventFilter : '/api/events';
+      const res = await fetch(url).then(async r => r.json());
+      if (res.attending)
+        state.events = res.attending.concat(res.interested);
+      else
+        state.events = res;
     }
   },
   // Store data across page refreshes, only discard on browser close

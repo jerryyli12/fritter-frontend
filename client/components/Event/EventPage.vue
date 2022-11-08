@@ -5,40 +5,40 @@
     <section v-if="$store.state.username">
       <section>
         <header>
-          <h2>Communities</h2>
+          <h2>Events</h2>
           <button @click="toggleCreating">Create</button>
         </header>
-        <CreateCommunityForm v-if="creating"/>
+        <CreateEventForm v-if="creating"/>
         <div id="leftButtons" v-if="$store.state.viewingLeft">
           <button id="left" @click="showJoined">
-            Joined Communities
+            My Events
           </button>
           <button id="right" @click="showAll">
-            All Communities
+            All Events
           </button>
         </div>
         <div id="rightButtons" v-else>
           <button id="left" @click="showJoined">
-            Joined Communities
+            My Events
           </button>
           <button id="right" @click="showAll">
-            All Communities
+            All Events
           </button>
         </div>
       </section>
       <section
-        v-if="$store.state.communities.length"
+        v-if="$store.state.events.length"
       >
-        <CommunityComponent
-          v-for="community in $store.state.communities"
-          :key="community.id"
-          :community="community"
+        <EventComponent
+          v-for="event in $store.state.events"
+          :key="event.id"
+          :event="event"
         />
       </section>
       <article
         v-else
       >
-        <h3>No communities to display. Try joining or creating a community.</h3>
+        <h3>No events to display. Try marking attending/interested for an existing event or creating a new one.</h3>
       </article>
 
     </section>
@@ -59,12 +59,12 @@
 </template>
 
 <script>
-import CommunityComponent from '@/components/Community/CommunityComponent.vue';
-import CreateCommunityForm from '@/components/Community/CreateCommunityForm.vue';
+import EventComponent from '@/components/Event/EventComponent.vue';
+import CreateEventForm from '@/components/Event/CreateEventForm.vue';
 
 export default {
-  name: 'CommunityPage',
-  components: {CreateCommunityForm, CommunityComponent},
+  name: 'EventPage',
+  components: {CreateEventForm, EventComponent},
   data() {
     return {
       creating: false,
@@ -73,8 +73,8 @@ export default {
   beforeCreate() {
     if (this.$store.state.username) {
       this.$store.commit('updateViewing', true);
-      this.$store.commit('updateCommunityFilter', `/api/communities/user`);
-      this.$store.commit('refreshCommunities');
+      this.$store.commit('updateEventFilter', `/api/events/user`);
+      this.$store.commit('refreshEvents');
     }
   },
   methods: {
@@ -83,13 +83,13 @@ export default {
     },
     showJoined() {
       this.$store.commit('updateViewing', true);
-      this.$store.commit('updateCommunityFilter', `/api/communities/user`);
-      this.$store.commit('refreshCommunities');
+      this.$store.commit('updateEventFilter', `/api/events/user`);
+      this.$store.commit('refreshEvents');
     },
     showAll() {
       this.$store.commit('updateViewing', false);
-      this.$store.commit('updateCommunityFilter', null);
-      this.$store.commit('refreshCommunities');
+      this.$store.commit('updateEventFilter', null);
+      this.$store.commit('refreshEvents');
     },
   }
 };

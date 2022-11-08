@@ -5,74 +5,78 @@
   <article
     class="freet"
   >
-    <header>
-      <h3 class="author">
-        <router-link :to="{name: 'Profile', params: {user: freet.author}}">
-          @{{ freet.author }}
-        </router-link>
-      </h3>
-      <div
-        v-if="$store.state.username === freet.author"
-        class="actions"
+    <div id="left">
+      <header>
+        <h3 class="author">
+          <router-link :to="{name: 'Profile', params: {user: freet.author}}">
+            @{{ freet.author }}
+          </router-link>
+        </h3>
+        <p class="info">
+          Posted at {{ freet.dateModified }}
+          <i v-if="freet.edited">(edited)</i>
+        </p>
+        <div
+          v-if="$store.state.username === freet.author"
+          class="actions"
+        >
+          <button
+            v-if="editing"
+            @click="submitEdit"
+          >
+            ✅ Save changes
+          </button>
+          <button
+            v-if="editing"
+            @click="stopEditing"
+          >
+            🚫 Discard changes
+          </button>
+          <button
+            v-if="!editing"
+            @click="startEditing"
+          >
+            ✏️ Edit
+          </button>
+          <button @click="deleteFreet">
+            🗑️ Delete
+          </button>
+        </div>
+      </header>
+      <textarea
+        v-if="editing"
+        class="content"
+        :value="draft"
+        @input="draft = $event.target.value"
+      />
+      <p
+        v-else
+        class="content"
       >
-        <button
-          v-if="editing"
-          @click="submitEdit"
-        >
-          ✅ Save changes
-        </button>
-        <button
-          v-if="editing"
-          @click="stopEditing"
-        >
-          🚫 Discard changes
-        </button>
-        <button
-          v-if="!editing"
-          @click="startEditing"
-        >
-          ✏️ Edit
-        </button>
-        <button @click="deleteFreet">
-          🗑️ Delete
-        </button>
-      </div>
-    </header>
-    <textarea
-      v-if="editing"
-      class="content"
-      :value="draft"
-      @input="draft = $event.target.value"
-    />
-    <p
-      v-else
-      class="content"
-    >
-      <p v-if="!freet.blur || viewable">
-        {{ freet.content }}
+        <span v-if="!freet.blur || viewable">
+          {{ freet.content }}
+        </span>
+        <span v-else>
+          The following Freet contains potentially controversial content.
+          <button @click="viewControversial">
+            View anyway
+          </button>
+          <button @click="userSettings">
+            Change user settings
+          </button>
+        </span>
       </p>
-      <p v-else>
-        The following Freet contains potentially controversial content.
-        <button @click="viewControversial">
-          View anyway
-        </button>
-        <button @click="userSettings">
-          Change user settings
-        </button>
-      </p>
-    </p>
-    <p class="info">
-      Posted at {{ freet.dateModified }}
-      <i v-if="freet.edited">(edited)</i>
-    </p>
-    <button @click="toggleLikeFreet">
-      <p v-if="freet.iLiked">❤️ {{ freet.likes }} Likes</p>
-      <p v-else> 🤍 {{ freet.likes }} Likes</p>
-    </button>
-    <button @click="toggleControversialFreet">
-      <p v-if="freet.iControversialed">⚠️</p>
-      <p v-else>⚠</p>
-    </button>
+    </div>
+    <div id="right">
+      <button @click="toggleLikeFreet">
+        <span v-if="freet.iLiked">❤️ {{ freet.likes }}</span>
+        <span v-else> 🤍 {{ freet.likes }}</span>
+      </button>
+      <button @click="toggleControversialFreet">
+        <span v-if="freet.iControversialed">⚠️</span>
+        <span v-else>⚠</span>
+      </button>
+    </div>
     <section class="alerts">
       <article
         v-for="(status, alert, index) in alerts"
@@ -205,9 +209,67 @@ export default {
 </script>
 
 <style scoped>
-.freet {
+/* .freet {
     border: 1px solid #111;
     padding: 20px;
     position: relative;
+} */
+.freet {
+  padding: 0.75em;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
 }
+
+.author {
+  margin: 0;
+}
+
+.content {
+  margin-top: 0.75em;
+  margin-bottom: 0em;
+}
+
+.info {
+  margin: 0;
+  font-size: 12px;
+  color: #555;
+}
+
+#right {
+  width: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: .5em;
+}
+
+#right > button {
+  height: 3em;
+  width: 3em;
+  border-radius: 1.5em;
+  border-width: 0;
+}
+
+#right > button:hover {
+  background-color: #ccc;
+}
+
+.actions {
+  display: flex;
+  gap: .5em;
+  margin-top: .25em;
+}
+.actions > button {
+  border-width: 0;
+  height: 3em;
+  border-radius: 1.5em;
+  padding: 0em 1em;
+}
+
+.actions > button:hover {
+  background-color: #ccc;
+}
+
 </style>

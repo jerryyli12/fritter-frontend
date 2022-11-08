@@ -13,7 +13,7 @@ type EventResponse = {
   name: string;
   location: string;
   time: string;
-  creator: UserResponse;
+  creator: string;
   attendingUsers: Array<UserResponse> | number;
   interestedUsers: Array<UserResponse> | number;
   userStatus: string;
@@ -29,7 +29,7 @@ const constructEventResponse = async (event: HydratedDocument<Event>, userId: Ty
     name: populatedEvent.name,
     location: populatedEvent.location,
     time: formatDate(populatedEvent.time),
-    creator: constructUserResponse(populatedEvent.creator as HydratedDocument<User>),
+    creator: populatedEvent.creator.username,
     attendingUsers: populatedEvent.attendingUsers.map(m => constructUserResponse(m as HydratedDocument<User>)),
     interestedUsers: populatedEvent.interestedUsers.map(m => constructUserResponse(m as HydratedDocument<User>)),
     userStatus: await EventCollection.getUserEventStatus(populatedEvent._id, userId),
@@ -44,7 +44,7 @@ const constructEventResponseNoPopulate = async (event: HydratedDocument<Event>, 
     name: populatedEvent.name,
     location: populatedEvent.location,
     time: formatDate(populatedEvent.time),
-    creator: constructUserResponse(populatedEvent.creator as HydratedDocument<User>),
+    creator: populatedEvent.creator.username,
     attendingUsers: populatedEvent.attendingUsers.length,
     interestedUsers: populatedEvent.interestedUsers.length,
     userStatus: await EventCollection.getUserEventStatus(populatedEvent._id, userId),

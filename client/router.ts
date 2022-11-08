@@ -2,6 +2,8 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import FreetsPage from './components/Freet/FreetsPage.vue';
 import CommunityPage from './components/Community/CommunityPage.vue';
+import EventPage from './components/Event/EventPage.vue';
+import OneCommunityPage from './components/Community/OneCommunityPage.vue';
 import AccountPage from './components/Account/AccountPage.vue';
 import ProfilePage from './components/Profile/ProfilePage.vue';
 import LoginPage from './components/Login/LoginPage.vue';
@@ -11,7 +13,9 @@ Vue.use(VueRouter);
 
 const routes = [
   {path: '/', name: 'Home', component: FreetsPage},
+  {path: '/community/:communityId', name: 'OneCommunityPage', component: OneCommunityPage},
   {path: '/community', name: 'Community', component: CommunityPage},
+  {path: '/event', name: 'Event', component: EventPage},
   {path: '/account', name: 'Account', component: AccountPage},
   {path: '/profile/:user', name: 'Profile', component: ProfilePage},
   {path: '/login', name: 'Login', component: LoginPage},

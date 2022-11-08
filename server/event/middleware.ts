@@ -27,12 +27,10 @@ const isValidEventLocation = async (req: Request, res: Response, next: NextFunct
 
 const isValidEventTime = async (req: Request, res: Response, next: NextFunction) => {
   const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:mm:ss a');
-  try {
-    formatDate(req.body.time);
-  }
-  catch (e) {
+  const result = formatDate(req.body.time);
+  if (result === 'Invalid date') {
     res.status(400).json({
-      error: 'Invalid date.'
+      error: 'Invalid date, use MM/DD/YY HH:MM:SS format.'
     });
     return;
   }

@@ -2,19 +2,29 @@
 
 <template>
   <main>
-    <section v-if="$store.state.username">
+    <section v-if="$store.state.username && user">
       <header>
         <h2>@{{user}}</h2>
         <p>
           Joined: {{dateJoined}}
         </p>
       </header>
-      <button @click="showCreated">
-        Freets
-      </button>
-      <button @click="showLiked">
-        Liked Freets
-      </button>
+      <div id="leftButtons" v-if="$store.state.viewingLeft">
+        <button id="left" @click="showCreated">
+          Freets
+        </button>
+        <button id="right" @click="showLiked">
+          Liked Freets
+        </button>
+      </div>
+      <div id="rightButtons" v-else>
+        <button id="left" @click="showCreated">
+          Freets
+        </button>
+        <button id="right" @click="showLiked">
+          Liked Freets
+        </button>
+      </div>
       <section
         v-if="$store.state.freets.length"
       >
@@ -29,6 +39,11 @@
       >
         <h3>No freets found.</h3>
       </article>
+    </section>
+    <section v-else-if="$store.state.username">
+      <h2>
+        This user does not exist.
+      </h2>
     </section>
     <section v-else>
       <header>
@@ -55,28 +70,47 @@ export default {
   data() {
     return {
       user: null,
-      dateJoined: null
+      dateJoined: null,
     };
   },
   async beforeCreate() {
     const user = this.$route.params.user;
     const userInfo = await fetch(`/api/users/${user}`);
     if (userInfo.ok) {
-      // this.createdFreets = await (await fetch(`/api/freets?author=${user}`)).json();
-      // this.likedFreets = await (await fetch(`/api/likes?user=${user}`)).json();
+      this.$store.commit('updateViewing', true);
       this.$store.commit('updateFilter', `/api/freets?author=${user}`);
       this.$store.commit('refreshFreets');
       this.user = user;
       const res = await userInfo.json();
       this.dateJoined = res.dateJoined;
     }
+    else
+      this.user = null;
+  },
+  watch: {
+    async '$route.params.user'(to, from) {
+      const user = to;
+      const userInfo = await fetch(`/api/users/${user}`);
+      if (userInfo.ok) {
+        this.$store.commit('updateViewing', true);
+        this.$store.commit('updateFilter', `/api/freets?author=${user}`);
+        this.$store.commit('refreshFreets');
+        this.user = user;
+        const res = await userInfo.json();
+        this.dateJoined = res.dateJoined;
+      }
+      else
+        this.user = null;
+    }
   },
   methods: {
     async showCreated() {
+      this.$store.commit('updateViewing', true);
       this.$store.commit('updateFilter', `/api/freets?author=${this.user}`);
       this.$store.commit('refreshFreets');
     },
     async showLiked() {
+      this.$store.commit('updateViewing', false);
       this.$store.commit('updateFilter', `/api/likes?user=${this.user}`);
       this.$store.commit('refreshFreets');
     }
@@ -85,7 +119,7 @@ export default {
 </script>
 
 <style scoped>
-section {
+/* section {
   display: flex;
   flex-direction: column;
 }
@@ -104,5 +138,64 @@ section .scrollbox {
   flex: 1 0 50vh;
   padding: 3%;
   overflow-y: scroll;
+} */
+
+header > p {
+  margin-left: 0.75em;
+  color: #555;
+  margin-top: 0;
 }
+
+#leftButtons {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+#leftButtons > button {
+  width: 100%;
+  font-size: 20px;
+  border-width: 0;
+  background-color: #fff;
+  border-bottom: 1px solid #555;
+}
+
+#leftButtons > #left {
+  border-bottom: 4px solid #2db3ff;
+}
+
+#leftButtons > button:hover {
+  background-color: #eee;
+}
+
+#rightButtons {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+#rightButtons > button {
+  width: 100%;
+  font-size: 20px;
+  border-width: 0;
+  background-color: #fff;
+  border-bottom: 1px solid #555;
+}
+
+#rightButtons > #right {
+  border-bottom: 4px solid #2db3ff;
+}
+
+#rightButtons > button:hover {
+  background-color: #eee;
+}
+
+h2 {
+  margin-bottom: 0.25em;
+}
+
+h3 {
+  margin-left: 0.75em;
+}
+
 </style>
